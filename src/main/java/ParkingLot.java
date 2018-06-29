@@ -36,4 +36,8 @@ public class ParkingLot {
         }
         throw new CarNotFoundException();
     }
+
+    public int getRemainingSpace() {
+        return capacity - parkedCars.size();
+    }
 }
