@@ -1,31 +1,19 @@
 import exceptions.AllParkingLotsIsFullException;
-import exceptions.CarNotFoundException;
 
 import java.util.List;
 
-public class ParkingBoy {
-    private List<ParkingLot> parkingLots;
+public class ParkingBoy extends Parker {
 
     public ParkingBoy(List<ParkingLot> parkingLots) {
-        this.parkingLots = parkingLots;
+        super(parkingLots);
     }
 
+    @Override
     public Ticket park(Car car) throws Exception {
-        for (ParkingLot parkingLot : parkingLots) {
-            if (parkingLot.hasSpace()) {
-                return parkingLot.receive(car);
-            }
-        }
-
-        throw new AllParkingLotsIsFullException();
-    }
-
-    public Car take(Ticket ticket) throws CarNotFoundException {
-        for (ParkingLot parkingLot : parkingLots) {
-            if (parkingLot.contains(ticket)) {
-                return parkingLot.retrieve(ticket);
-            }
-        }
-        throw new CarNotFoundException();
+        return parkingLots.stream()
+                .filter(ParkingLot::hasSpace)
+                .findFirst()
+                .orElseThrow(AllParkingLotsIsFullException::new)
+                .receive(car);
     }
 }
