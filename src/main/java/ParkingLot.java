@@ -40,4 +40,8 @@ public class ParkingLot {
     public int getRemainingSpace() {
         return capacity - parkedCars.size();
     }
+
+    public double getVacancyRate() {
+        return (double) getRemainingSpace() / capacity;
+    }
 }

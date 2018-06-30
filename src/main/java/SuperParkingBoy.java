@@ -4,9 +4,9 @@ import java.util.List;
 
 import static java.util.Comparator.comparing;
 
-public class SmartParkingBoy extends Parker {
+public class SuperParkingBoy extends Parker {
 
-    public SmartParkingBoy(List<ParkingLot> parkingLots) {
+    public SuperParkingBoy(List<ParkingLot> parkingLots) {
         super(parkingLots);
     }
 
@@ -14,7 +14,7 @@ public class SmartParkingBoy extends Parker {
     public Ticket park(Car car) throws Exception {
         return parkingLots.stream()
                 .filter(ParkingLot::hasSpace)
-                .max(comparing(ParkingLot::getRemainingSpace))
+                .max(comparing(ParkingLot::getVacancyRate))
                 .orElseThrow(AllParkingLotsIsFullException::new)
                 .receive(car);
     }
