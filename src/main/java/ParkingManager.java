@@ -1,18 +1,20 @@
 import exceptions.AllParkingLotsIsFullException;
 import exceptions.CarNotFoundException;
+import exceptions.ParkingLotIsFullException;
 
 import java.util.List;
 
-public class ParkingManager {
+public class ParkingManager implements Parkable {
     private List<ParkingLot> parkingLots;
-    private List<Parker> parkerList;
+    private List<Parker> parkers;
 
-    public ParkingManager(List<ParkingLot> parkingLots, List<Parker> parkerList) {
+    public ParkingManager(List<ParkingLot> parkingLots, List<Parker> parkers) {
         this.parkingLots = parkingLots;
-        this.parkerList = parkerList;
+        this.parkers = parkers;
     }
 
-    public Ticket park(Car car) throws Exception {
+    @Override
+    public Ticket park(Car car) throws AllParkingLotsIsFullException, ParkingLotIsFullException {
         return parkingLots.stream()
                 .filter(ParkingLot::hasSpace)
                 .findFirst()
@@ -20,7 +22,8 @@ public class ParkingManager {
                 .receive(car);
     }
 
-    public Car take(Ticket ticket) throws Exception {
+    @Override
+    public Car take(Ticket ticket) throws CarNotFoundException {
         return parkingLots.stream()
                 .filter(parkingLot -> parkingLot.contains(ticket))
                 .findFirst()

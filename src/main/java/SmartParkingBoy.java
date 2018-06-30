@@ -1,4 +1,5 @@
 import exceptions.AllParkingLotsIsFullException;
+import exceptions.ParkingLotIsFullException;
 
 import java.util.List;
 
@@ -11,7 +12,7 @@ public class SmartParkingBoy extends Parker {
     }
 
     @Override
-    public Ticket park(Car car) throws Exception {
+    public Ticket park(Car car) throws AllParkingLotsIsFullException, ParkingLotIsFullException {
         return parkingLots.stream()
                 .filter(ParkingLot::hasSpace)
                 .max(comparing(ParkingLot::getRemainingSpace))

@@ -2,15 +2,14 @@ import exceptions.CarNotFoundException;
 
 import java.util.List;
 
-public abstract class Parker {
+public abstract class Parker implements Parkable {
     protected List<ParkingLot> parkingLots;
 
     public Parker(List<ParkingLot> parkingLots) {
         this.parkingLots = parkingLots;
     }
 
-    public abstract Ticket park(Car car) throws Exception;
-
+    @Override
     public Car take(Ticket ticket) throws CarNotFoundException {
         return parkingLots.stream()
                 .filter(parkingLot -> parkingLot.contains(ticket))
