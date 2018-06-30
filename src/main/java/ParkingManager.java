@@ -30,4 +30,16 @@ public class ParkingManager implements Parkable {
                 .orElseThrow(CarNotFoundException::new)
                 .retrieve(ticket);
     }
+
+    public Ticket parkBy(Parker parker, Car car) throws AllParkingLotsIsFullException, ParkingLotIsFullException {
+        return parker.park(car);
+    }
+
+    public Car takeBy(Ticket ticket) throws CarNotFoundException {
+        return parkers.stream()
+                .filter(parker -> parker.hasCar(ticket))
+                .findFirst()
+                .orElseThrow(CarNotFoundException::new)
+                .take(ticket);
+    }
 }

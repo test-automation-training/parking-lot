@@ -15,9 +15,9 @@ public class ParkingManagerTest {
         List<ParkingLot> parkingLots = new ArrayList<>();
         parkingLots.add(new ParkingLot(10));
 
-        ParkingManager parkingBoy = new ParkingManager(parkingLots, new ArrayList<>());
+        ParkingManager parkingManager = new ParkingManager(parkingLots, new ArrayList<>());
 
-        Ticket ticket = parkingBoy.park(new Car());
+        Ticket ticket = parkingManager.park(new Car());
 
         assertThat(ticket).isNotNull();
     }
@@ -32,9 +32,9 @@ public class ParkingManagerTest {
         ParkingLot secondParkingLot = new ParkingLot(10);
         parkingLots.add(secondParkingLot);
 
-        ParkingManager parkingBoy = new ParkingManager(parkingLots, new ArrayList<>());
+        ParkingManager parkingManager = new ParkingManager(parkingLots, new ArrayList<>());
 
-        Ticket ticket = parkingBoy.park(new Car());
+        Ticket ticket = parkingManager.park(new Car());
 
         assertThat(firstParkingLot.contains(ticket)).isTrue();
         assertThat(secondParkingLot.contains(ticket)).isFalse();
@@ -50,9 +50,9 @@ public class ParkingManagerTest {
         ParkingLot secondParkingLot = new ParkingLot(10);
         parkingLots.add(secondParkingLot);
 
-        ParkingManager parkingBoy = new ParkingManager(parkingLots, new ArrayList<>());
+        ParkingManager parkingManager = new ParkingManager(parkingLots, new ArrayList<>());
 
-        Ticket ticket = parkingBoy.park(new Car());
+        Ticket ticket = parkingManager.park(new Car());
 
         assertThat(firstParkingLot.contains(ticket)).isFalse();
         assertThat(secondParkingLot.contains(ticket)).isTrue();
@@ -68,9 +68,9 @@ public class ParkingManagerTest {
         ParkingLot secondParkingLot = new ParkingLot(0);
         parkingLots.add(secondParkingLot);
 
-        ParkingManager parkingBoy = new ParkingManager(parkingLots, new ArrayList<>());
+        ParkingManager parkingManager = new ParkingManager(parkingLots, new ArrayList<>());
 
-        assertThatThrownBy(() -> parkingBoy.park(new Car())).isInstanceOf(AllParkingLotsIsFullException.class);
+        assertThatThrownBy(() -> parkingManager.park(new Car())).isInstanceOf(AllParkingLotsIsFullException.class);
     }
 
     @Test
@@ -83,15 +83,15 @@ public class ParkingManagerTest {
         ParkingLot secondParkingLot = new ParkingLot(10);
         parkingLots.add(secondParkingLot);
 
-        ParkingManager parkingBoy = new ParkingManager(parkingLots, new ArrayList<>());
+        ParkingManager parkingManager = new ParkingManager(parkingLots, new ArrayList<>());
 
         Car car = new Car();
 
-        Ticket ticket = parkingBoy.park(car);
+        Ticket ticket = parkingManager.park(car);
 
         assertThat(firstParkingLot.contains(ticket)).isTrue();
 
-        Car takenCar = parkingBoy.take(ticket);
+        Car takenCar = parkingManager.take(ticket);
 
         assertThat(takenCar).isEqualTo(car);
 
@@ -108,15 +108,15 @@ public class ParkingManagerTest {
         ParkingLot secondParkingLot = new ParkingLot(10);
         parkingLots.add(secondParkingLot);
 
-        ParkingManager parkingBoy = new ParkingManager(parkingLots, new ArrayList<>());
+        ParkingManager parkingManager = new ParkingManager(parkingLots, new ArrayList<>());
 
         Car car = new Car();
 
-        Ticket ticket = parkingBoy.park(car);
+        Ticket ticket = parkingManager.park(car);
 
         assertThat(secondParkingLot.contains(ticket)).isTrue();
 
-        Car takenCar = parkingBoy.take(ticket);
+        Car takenCar = parkingManager.take(ticket);
 
         assertThat(takenCar).isEqualTo(car);
 
@@ -133,8 +133,70 @@ public class ParkingManagerTest {
         ParkingLot secondParkingLot = new ParkingLot(10);
         parkingLots.add(secondParkingLot);
 
-        ParkingManager parkingBoy = new ParkingManager(parkingLots, new ArrayList<>());
+        ParkingManager parkingManager = new ParkingManager(parkingLots, new ArrayList<>());
 
-        assertThatThrownBy(() -> parkingBoy.take(new Ticket())).isInstanceOf(CarNotFoundException.class);
+        assertThatThrownBy(() -> parkingManager.take(new Ticket())).isInstanceOf(CarNotFoundException.class);
+    }
+
+    @Test
+    void returnTicketWhenParkByParkerSuccess() throws Exception {
+        List<ParkingLot> parkingLots = new ArrayList<>();
+        parkingLots.add(new ParkingLot(10));
+
+        Parker parker = new ParkingBoy(parkingLots);
+        List<Parker> parkers = new ArrayList<>();
+        parkers.add(parker);
+
+        ParkingManager parkingManager = new ParkingManager(new ArrayList<>(), parkers);
+
+        Ticket ticket = parkingManager.parkBy(parker, new Car());
+
+        assertThat(ticket).isNotNull();
+    }
+
+    @Test
+    void throwAllParkingLotsIsFullExceptionWhenParkersAllParkingLotsIsFull() {
+        List<ParkingLot> parkingLots = new ArrayList<>();
+        parkingLots.add(new ParkingLot(0));
+
+        Parker parker = new ParkingBoy(parkingLots);
+        List<Parker> parkers = new ArrayList<>();
+        parkers.add(parker);
+
+        ParkingManager parkingManager = new ParkingManager(new ArrayList<>(), parkers);
+
+        assertThatThrownBy(() -> parkingManager.parkBy(parker, new Car())).isInstanceOf(AllParkingLotsIsFullException.class);
+    }
+
+    @Test
+    void returnCarWhenTakeByParkerWithCorrectTicket() throws Exception {
+        List<ParkingLot> parkingLots = new ArrayList<>();
+        parkingLots.add(new ParkingLot(10));
+
+        Parker parker = new ParkingBoy(parkingLots);
+        List<Parker> parkers = new ArrayList<>();
+        parkers.add(parker);
+
+        ParkingManager parkingManager = new ParkingManager(new ArrayList<>(), parkers);
+
+        Ticket ticket = parkingManager.parkBy(parker, new Car());
+
+        Car takenCar = parkingManager.takeBy(ticket);
+
+        assertThat(takenCar).isNotNull();
+    }
+
+    @Test
+    void throwCarNotFoundExceptionWhenParkByParkerButCarNotFound() {
+        List<ParkingLot> parkingLots = new ArrayList<>();
+        parkingLots.add(new ParkingLot(10));
+
+        Parker parker = new ParkingBoy(parkingLots);
+        List<Parker> parkers = new ArrayList<>();
+        parkers.add(parker);
+
+        ParkingManager parkingManager = new ParkingManager(new ArrayList<>(), parkers);
+
+        assertThatThrownBy(() -> parkingManager.takeBy(new Ticket())).isInstanceOf(CarNotFoundException.class);
     }
 }

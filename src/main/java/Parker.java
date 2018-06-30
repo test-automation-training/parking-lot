@@ -17,4 +17,8 @@ public abstract class Parker implements Parkable {
                 .orElseThrow(CarNotFoundException::new)
                 .retrieve(ticket);
     }
+
+    public boolean hasCar(Ticket ticket) {
+        return parkingLots.stream().anyMatch(parkingLot -> parkingLot.contains(ticket));
+    }
 }
