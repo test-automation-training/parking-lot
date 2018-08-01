@@ -1,19 +1,23 @@
+buildscript {
+    repositories {
+        maven { url 'http://maven.aliyun.com/nexus/content/groups/public/' }
+        maven { url 'http://maven.aliyun.com/nexus/content/repositories/jcenter' }
+    }
+}
+
 plugins {
     id 'java'
-    id 'application'
     id 'eclipse' // optional (to generate Eclipse project files)
     id 'idea' // optional (to generate IntelliJ IDEA project files)
 }
 
 repositories {
-    mavenCentral()
-    jcenter()
+    maven { url 'http://maven.aliyun.com/nexus/content/groups/public/' }
+    maven { url 'http://maven.aliyun.com/nexus/content/repositories/jcenter' }
 }
 
-mainClassName = 'App'
-
-sourceCompatibility = 10
-targetCompatibility = 10
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
 
 dependencies {
     testCompile 'org.junit.jupiter:junit-jupiter-api:5.2.0'
@@ -21,7 +25,6 @@ dependencies {
     testRuntime 'org.junit.jupiter:junit-jupiter-engine:5.2.0'
 
     testCompile 'org.assertj:assertj-core:3.10.0'
-    testCompile 'org.mockito:mockito-core:2.+'
 }
 
 test {
@@ -32,5 +35,5 @@ test {
 }
 
 wrapper {
-    gradleVersion = '4.8.1'
+    gradleVersion = '4.9'
 }
